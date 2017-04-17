@@ -1,0 +1,5 @@
+services:
+  ruvents_frujax.event_listener.frujax_redirect:
+    class: Ruvents\FrujaxBundle\EventListener\FrujaxSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
