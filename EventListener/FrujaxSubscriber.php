@@ -18,8 +18,8 @@ class FrujaxSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::RESPONSE => [
-                ['processRedirect', 1],
-                ['addRequestInfo', 0],
+                ['processRedirectResponse', 1],
+                ['processResponse', 0],
             ],
         ];
     }
@@ -27,7 +27,7 @@ class FrujaxSubscriber implements EventSubscriberInterface
     /**
      * @param FilterResponseEvent $event
      */
-    public function processRedirect(FilterResponseEvent $event)
+    public function processRedirectResponse(FilterResponseEvent $event)
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
@@ -44,14 +44,16 @@ class FrujaxSubscriber implements EventSubscriberInterface
     /**
      * @param FilterResponseEvent $event
      */
-    public function addRequestInfo(FilterResponseEvent $event)
+    public function processResponse(FilterResponseEvent $event)
     {
         $request = $event->getRequest();
+        $response = $event->getResponse();
 
         if ($event->isMasterRequest() && $this->isFrujaxRequest($request)) {
-            $event->getResponse()->headers->add([
-                'Frujax-Request-Url' => $request->getRequestUri(),
-            ]);
+            $response->headers->add(['Frujax-Request-Url' => $request->getRequestUri()]);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
         }
     }
 

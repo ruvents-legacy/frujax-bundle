@@ -1,4 +1,4 @@
-(function ($, history) {
+(function ($) {
     'use strict'
 
     /**
@@ -192,8 +192,8 @@
     }
 
     Frujax.prototype._pushToHistory = function (jqXHR, options) {
-        history.pushState(
-            undefined,
+        window.history.pushState(
+            'frujax',
             jqXHR.getResponseHeader('Frujax-Title'),
             jqXHR.getResponseHeader('Frujax-Request-Url') || options.url
         )
@@ -244,7 +244,6 @@
 
     Frujax.prototype._getAjaxSettings = function (options) {
         return {
-            cache: options.cache,
             context: this.$element,
             converters: {
                 'text html': function (data) {
@@ -411,7 +410,6 @@
         actionEvents: 'done',
         autoload: false,
         autowire: true,
-        cache: true,
         data: {},
         events: undefined,
         headers: {},
@@ -434,10 +432,20 @@
     $.fn.frujax.callbacks = {}
 
     /**
-     * Automatic initialization
+     * History PopState Event
+     */
+
+    $(window).on('popstate', function (event) {
+        if ('frujax' === event.originalEvent.state) {
+            window.location.reload()
+        }
+    })
+
+    /**
+     * Automatic Initialization
      */
 
     $(document).ready(function () {
         $(Frujax.DATA_SELECTOR).frujax()
     })
-})(window.jQuery, window.history)
+})(window.jQuery)
