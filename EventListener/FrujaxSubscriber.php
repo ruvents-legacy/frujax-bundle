@@ -36,8 +36,11 @@ class FrujaxSubscriber implements EventSubscriberInterface
             && $this->isFrujaxRequest($request)
             && $request->headers->has('Frujax-Intercept-Redirect')
         ) {
-            $newResponse = new FrujaxRedirectResponse($response->getTargetUrl());
-            $event->setResponse($newResponse);
+            $frujaxResponse = new FrujaxRedirectResponse($response->getTargetUrl(), $response->headers);
+            $frujaxResponse->setProtocolVersion($response->getProtocolVersion());
+            $frujaxResponse->setCharset($response->getCharset());
+
+            $event->setResponse($frujaxResponse);
         }
     }
 

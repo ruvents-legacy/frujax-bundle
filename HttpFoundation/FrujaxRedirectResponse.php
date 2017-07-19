@@ -14,9 +14,9 @@ class FrujaxRedirectResponse extends Response
     /**
      * {@inheritdoc}
      */
-    public function __construct($url, $status = 200, $headers = [])
+    public function __construct($url, $headers = [])
     {
-        parent::__construct('', $status, $headers);
+        parent::__construct('', 200, $headers);
         $this->setTargetUrl($url);
     }
 
